@@ -13,7 +13,7 @@ const logInWithGithub = () =>{
 
 const UseGithubButton = ({ children }: UseGithubButtonProps) => {
   return (
-    <Button variant="signin" onClick={logInWithGithub} className="w-full bg-white text-black">
+    <Button variant="signin" onClick={logInWithGithub}>
       <svg viewBox="0 0 438.549 438.549" className="mr-2 h-6 w-6">
         <path
           fill="currentColor"

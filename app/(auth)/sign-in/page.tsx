@@ -2,13 +2,21 @@
 import UseGithubButton from "@/components/UseGithubButton";
 import UseGoogleButton from "@/components/UseGoogleButton";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import { Press_Start_2P } from "next/font/google";
 import Link from "next/link";
 
+const font = Press_Start_2P({
+  subsets: ["greek"],
+  weight: "400"
+});
 export default function SignIn() {
+
   return (
     <main className="flex w-screen h-screen">
-      <div className=" w-[58vw] bg-[rgb(255,237,210)] flex items-center justify-center">
-        <video width="600px" height="600px" loop autoPlay muted>
+      <div className=" w-[58vw] bg-[rgb(255,237,210)] flex items-center justify-center flex-col gap-12">
+        <h1 className={cn("text-[38px] -mb-6", font.className)}>VISUALIZE</h1>
+        <video width="700px" height="700px" loop autoPlay muted>
           <source
             /* @ts-ignore */
             src="/VISUALIZE.mp4"
@@ -16,6 +24,7 @@ export default function SignIn() {
           />
           Your browser does not support the video tag.
         </video>
+        <p>An idea-to-video platform that brings your creativity to motion</p>
       </div>
 
       <div className="w-[42vw] bg-[rgb(18,18,18)] flex flex-col justify-center gap-6">
@@ -41,6 +50,12 @@ export default function SignIn() {
             </span>
           </p>
           <Separator className="bg-gray-500 mt-3" />
+          <div className="flex items-center justify-between text-muted mt-8">
+            <a href="#" className=" font-light">Twitter</a> 
+            <a href="#" className=" font-light">Discord</a> 
+            <a href="#" className=" font-light">About us</a> 
+            <a href="#" className=" font-light">Careers</a> 
+          </div>
         </div>
       </div>
     </main>

@@ -14,7 +14,7 @@ const logInWithGoogle = () => {
 
 const UseGoogleButton = ({ children }: UseGoogleButtonProps) => {
   return (
-    <Button variant="signin" onClick={logInWithGoogle} className="w-full bg-white text-black">
+    <Button variant="signin" onClick={logInWithGoogle}>
       <Image src={google.src} width={4} height={4}  alt="google" className="mr-2 h-9 w-9"/>
       {children}
     </Button>
