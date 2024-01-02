@@ -22,7 +22,7 @@ const Navbar = async (props: Props) => {
         <h1 className={cn("text-white font-bold text-[23px] tracking-[0.5rem]", font.className)}>VISUALIZE</h1>
         <NavbarDropdown userName={session?.user?.name as string}/>
       </div>
-      <Separator className=" bg-muted-foreground mt-5"/>
+      <Separator className=" bg-muted-foreground my-6"/>
     </MaxWidthWrapper>
   );
 };

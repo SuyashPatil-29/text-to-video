@@ -41,7 +41,7 @@ const NavToggle = (props: Props) => {
           <Link
             href="/"
             className={cn(
-              "text-black px-4 py-2 rounded-md w-[200px] text-center",
+              "text-black px-4 py-2 rounded-md w-[150px] text-center",
               pathname === "/" ? "bg-[#f5f5f5] hover:bg-[#f5f5f5]" : "bg-transparent text-white border border-[#f5f5f5]"
             )}
           >
@@ -50,7 +50,7 @@ const NavToggle = (props: Props) => {
           <Link
             href="/my-library"
             className={cn(
-              "text-black px-4 py-2 rounded-md w-[200px] text-center",
+              "text-black px-4 py-2 rounded-md w-[150px] text-center",
               pathname === "/my-library" ? "bg-[#f5f5f5] hover:bg-[#f5f5f5]" : "bg-transparent text-white border border-[#f5f5f5]"
             )}
           >

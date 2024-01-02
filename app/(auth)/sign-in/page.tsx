@@ -1,15 +1,15 @@
-"use client";
+"use client"
 import UseGithubButton from "@/components/UseGithubButton";
 import UseGoogleButton from "@/components/UseGoogleButton";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Press_Start_2P } from "next/font/google";
-import Link from "next/link";
 
 const font = Press_Start_2P({
   subsets: ["greek"],
   weight: "400"
 });
+
 export default function SignIn() {
 
   return (
