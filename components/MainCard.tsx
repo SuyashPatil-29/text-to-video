@@ -42,6 +42,7 @@ const MainCard = ({ generation }: VideoProps) => {
             autoPlay
             muted
             controls={isHovered} // Show controls only when hovered
+            className='h-fit'
           >
             <source
               /* @ts-ignore */

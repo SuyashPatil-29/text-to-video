@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import axios from "axios";
 import { Generation } from "@prisma/client";
+import ChatInput from "@/components/ChatInput";
 
 type Props = {};
 

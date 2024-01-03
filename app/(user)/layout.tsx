@@ -1,3 +1,4 @@
+import ChatInput from "@/components/ChatInput";
 import NavToggle from "@/components/NavToggle";
 import Navbar from "@/components/Navbar";
 import { getAuthSession } from "@/lib/authOptions";
@@ -14,12 +15,13 @@ export default async function ProtectedLayout({
 
   return (
     <div
-      className="flex flex-col min-h-screen pb-16 bg-[rgb(18,18,18)]]"
+      className="flex flex-col min-h-screen pb-16 bg-[rgb(13,13,13)]] mb-[150px]"
       // style={{backgroundImage: "url(/assets/docs-right.svg)", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "left"}}
     >
       <Navbar />
       <NavToggle />
       {children}
+      <ChatInput />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { useState } from "react";
 import "../globals.css";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import ChatInput from "@/components/ChatInput";
 
 const sleep = (ms:any) => new Promise((r) => setTimeout(r, ms));
 
@@ -86,7 +87,7 @@ export default function Home() {
         <a href="https://replicate.com/stability-ai/stable-diffusion">SDXL</a>:
       </p>
 
-      <form className="form" onSubmit={handleSubmit}>
+      {/* <form className="form" onSubmit={handleSubmit}>
         <input
           type="text"
           name="prompt"
@@ -94,7 +95,7 @@ export default function Home() {
           className=" text-black"
         />
         <button type="submit">Go!</button>
-      </form>
+      </form> */}
 
       {error && <div>{error}</div>}
 

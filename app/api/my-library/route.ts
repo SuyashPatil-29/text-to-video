@@ -11,6 +11,9 @@ export async function GET(req: Request) {
       where: {
         userId: session.user.id,
         status : "COMPLETED"
+      },
+      orderBy : {
+        createdAt : "desc"
       }
     })
     console.log("generation", generation);
