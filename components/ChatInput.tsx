@@ -1,42 +1,190 @@
-"use client"
+"use client";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { Sparkle } from "lucide-react";
-import { Press_Start_2P } from "next/font/google";
-import { Textarea } from "./ui/textarea";
-import { useRef } from "react";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
+import { useToast } from "./ui/use-toast";
+
+const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
 const ChatInput = () => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [prediction, setPrediction] = useState(null);
+  const [error, setError] = useState(null);
+  const { data: session } = useSession();
+  const { toast } = useToast();
+
+  const formSchema = z.object({
+    prompt: z.string().min(1, "Prompt is required"),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      prompt: "",
+    },
+  });
+
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      if (!values.prompt.trim()) {
+        toast({
+          title: "Error",
+          description: "Textbox cannot be empty",
+          variant: "destructive",
+        });
+        console.log(values.prompt);
+        return;
+      }
+      const response = await fetch("/api/predictions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: values.prompt,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        setError(error.detail);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.detail,
+        });
+        return;
+      }
+
+      let prediction = await response.json();
+      setPrediction(prediction);
+
+      while (
+        prediction.status !== "succeeded" &&
+        prediction.status !== "failed"
+      ) {
+        await sleep(1000);
+        const statusResponse = await fetch("/api/predictions/" + prediction.id);
+
+        if (!statusResponse.ok) {
+          const error = await statusResponse.json();
+          setError(error.detail);
+          return;
+        }
+
+        prediction = await statusResponse.json();
+        setPrediction(prediction);
+      }
+
+      const data = {
+        prompt: values.prompt,
+        userId: session?.user.id,
+        videoUrl: prediction.output,
+        status: prediction.status,
+        id: prediction.id,
+        visibility: "PUBLIC",
+      };
+
+      const libraryResponse = await axios.post("/api/my-library", data);
+
+      if (libraryResponse.status === 200) {
+        console.log("Success");
+      } else {
+        console.log("Error");
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
+
+  console.log({ prediction });
 
   return (
     <div className=" bg-[rgb(18,18,18)] w-screen h-[150px] fixed bottom-0 border-t-[1px] border-muted-foreground">
-    <div className="fixed bottom-0 left-0 w-full">
-      <div className="mx-2 flex flex-row gap-3 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
-        <div className="relative flex h-full flex-1 items-stretch md:flex-col">
-          <div className="relative flex flex-col w-full flex-grow p-4">
-            <div className="relative">
-              <Textarea
-                ref={textareaRef}
-                autoFocus
-                className="resize-none pr-12 text-xl rounded-xl text-justify text-white bg-[rgb(34,34,34)] scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch flex-1"
-                placeholder="Describe your story"
-                rows={1}
-                maxRows={1}
-                minRows={1}
-                spellCheck
-                />
-              <Button
-                className="absolute bottom-[4px] right-[8px] px-0 py-0"
-                aria-label="send message"
-                >
-                <Sparkle className="h-8 w-8 rounded-lg  bg-[rgb(255,237,210)] text-black" fill="black" />
-              </Button>
+      <div className="fixed bottom-0 left-0 w-full">
+        <div className="mx-2 flex flex-row gap-3 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
+          <div className="relative flex h-full flex-1 items-stretch md:flex-col">
+            <div className="relative flex flex-col w-full flex-grow p-4">
+              <div className="relative">
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(handleSubmit)}
+                    className="space-y-8"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="prompt"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Textarea
+                              autoFocus
+                              className={cn(
+                                "resize-none pr-12 text-xl rounded-xl text-justify text-white bg-[rgb(34,34,34)] flex-1",
+                                form.formState.errors["prompt"]
+                                  ? "focus:ring-offset-red-500 focus:ring-offset border-red-500"
+                                  : "border-input"
+                              )}
+                              placeholder="Describe your story"
+                              rows={1}
+                              maxRows={3}
+                              minRows={1}
+                              spellCheck
+                              {...field}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      className={cn(
+                        "absolute bottom-[4px] right-[8px] px-0 py-0"
+                      )}
+                      aria-label="send message"
+                      type="submit"
+                    >
+                      <Sparkle
+                        className="h-8 w-8 rounded-lg  bg-[rgb(255,237,210)] text-black"
+                        fill="black"
+                      />
+                    </Button>
+                  </form>
+                </Form>
+              </div>
             </div>
           </div>
         </div>
+        {error && <div className=" text-white">{error}</div>}
+
+        {prediction && (
+          <div>
+            {/* @ts-ignore */}
+            {prediction.output && (
+              <div className="videoWrapper">
+                {/* Use the video element instead of Image */}
+                <video controls width="100%" height="auto">
+                  <source
+                    /* @ts-ignore */
+                    src={prediction.output}
+                    type="video/mp4"
+                  />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            )}
+            {/* @ts-ignore */}
+            <p>status: {prediction.status}</p>
+          </div>
+        )}
       </div>
     </div>
-                  </div>
   );
 };
 
