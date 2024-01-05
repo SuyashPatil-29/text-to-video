@@ -1,5 +1,5 @@
 "use client";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -11,6 +11,10 @@ import { z } from "zod";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
+import Link from "next/link";
+import { Checkbox } from "./ui/checkbox";
+import {Visibility} from "@prisma/client"
+
 
 const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
@@ -22,17 +26,20 @@ const ChatInput = () => {
 
   const formSchema = z.object({
     prompt: z.string().min(1, "Prompt is required"),
+    public: z.boolean().default(false),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       prompt: "",
+      public: false,
     },
   });
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      console.log(values.public === true ? Visibility.PUBLIC : Visibility.PRIVATE);
       if (!values.prompt.trim()) {
         toast({
           title: "Error",
@@ -89,7 +96,7 @@ const ChatInput = () => {
         videoUrl: prediction.output,
         status: prediction.status,
         id: prediction.id,
-        visibility: "PUBLIC",
+        visibility: values.public === true ? Visibility.PUBLIC : Visibility.PRIVATE,
       };
 
       const libraryResponse = await axios.post("/api/my-library", data);
@@ -116,7 +123,7 @@ const ChatInput = () => {
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(handleSubmit)}
-                    className="space-y-8"
+                    className="space-y-8 flex items-center jus"
                   >
                     <FormField
                       control={form.control}
@@ -143,6 +150,33 @@ const ChatInput = () => {
                         </FormItem>
                       )}
                     />
+                    <FormField
+                      control={form.control}
+                      name="public"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>
+                              Make this video public
+                            </FormLabel>
+                            <FormDescription>
+                              Public videos can be seen by everyone in the
+                              <Link href="/examples/forms" className="text-yellow-400">
+                                Explore
+                              </Link>{" "}
+                              page.
+                            </FormDescription>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+
                     <Button
                       className={cn(
                         "absolute bottom-[4px] right-[8px] px-0 py-0"
