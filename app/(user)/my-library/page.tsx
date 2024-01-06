@@ -2,10 +2,9 @@
 import MainCard from "@/components/MainCard";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import MyLibWrapper from "@/components/MyLibWrapper";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import React from "react";
-import axios from "axios";
 import { Generation } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 type Props = {};
 

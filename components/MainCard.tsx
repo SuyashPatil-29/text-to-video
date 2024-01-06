@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
-import { Button } from './ui/button';
-import { FileEditIcon, MoreHorizontalIcon, RepeatIcon } from 'lucide-react';
+"use client"
 import { Generation } from '@prisma/client';
+import { useRef, useState } from 'react';
 
 type VideoProps = {
   generation: Generation;

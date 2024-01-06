@@ -1,5 +1,12 @@
 "use client";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -13,8 +20,7 @@ import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
 import Link from "next/link";
 import { Checkbox } from "./ui/checkbox";
-import {Visibility} from "@prisma/client"
-
+import { Visibility } from "@prisma/client";
 
 const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
@@ -39,7 +45,9 @@ const ChatInput = () => {
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      console.log(values.public === true ? Visibility.PUBLIC : Visibility.PRIVATE);
+      console.log(
+        values.public === true ? Visibility.PUBLIC : Visibility.PRIVATE
+      );
       if (!values.prompt.trim()) {
         toast({
           title: "Error",
@@ -96,7 +104,8 @@ const ChatInput = () => {
         videoUrl: prediction.output,
         status: prediction.status,
         id: prediction.id,
-        visibility: values.public === true ? Visibility.PUBLIC : Visibility.PRIVATE,
+        visibility:
+          values.public === true ? Visibility.PUBLIC : Visibility.PRIVATE,
       };
 
       const libraryResponse = await axios.post("/api/my-library", data);
@@ -125,57 +134,49 @@ const ChatInput = () => {
                     onSubmit={form.handleSubmit(handleSubmit)}
                     className="space-y-8 flex items-center jus"
                   >
-                    <FormField
-                      control={form.control}
-                      name="prompt"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Textarea
-                              autoFocus
-                              className={cn(
-                                "resize-none pr-12 text-xl rounded-xl text-justify text-white bg-[rgb(34,34,34)] flex-1",
-                                form.formState.errors["prompt"]
-                                  ? "focus:ring-offset-red-500 focus:ring-offset border-red-500"
-                                  : "border-input"
-                              )}
-                              placeholder="Describe your story"
-                              rows={1}
-                              maxRows={3}
-                              minRows={1}
-                              spellCheck
-                              {...field}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="public"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <div className="space-y-1 leading-none">
-                            <FormLabel>
-                              Make this video public
-                            </FormLabel>
-                            <FormDescription>
-                              Public videos can be seen by everyone in the
-                              <Link href="/examples/forms" className="text-yellow-400">
-                                Explore
-                              </Link>{" "}
-                              page.
-                            </FormDescription>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
+                    <div className=" flex flex-col w-full items-end gap-4">
+                      <FormField
+                        control={form.control}
+                        name="public"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center gap-2">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                className="h-5 w-5 border-background"
+                              />
+                            </FormControl>
+                              <FormLabel className=" text-background pb-1">Make this video public</FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="prompt"
+                        render={({ field }) => (
+                          <FormItem className=" flex-1 w-full">
+                            <FormControl>
+                              <Textarea
+                                autoFocus
+                                className={cn(
+                                  "resize-none pr-12 text-xl rounded-xl text-justify text-white bg-[rgb(34,34,34)] flex-1",
+                                  form.formState.errors["prompt"]
+                                    ? "focus:ring-offset-red-500 focus:ring-offset border-red-500"
+                                    : "border-input"
+                                )}
+                                placeholder="Describe your story"
+                                rows={1}
+                                maxRows={3}
+                                minRows={1}
+                                spellCheck
+                                {...field}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
 
                     <Button
                       className={cn(
