@@ -2,6 +2,7 @@
 import MainCard from "@/components/MainCard";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import MyLibWrapper from "@/components/MyLibWrapper";
+import downloadedOutput from "@/lib/downloadedOutputs";
 import { Generation } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -24,6 +25,9 @@ const MyLibrary = () => {
     <MaxWidthWrapper className="mt-10">
       <MyLibWrapper>
         {myGenerations?.map((generation: any) => (
+          <MainCard key={generation.id} generation={generation} />
+        ))}
+        {downloadedOutput?.map((generation: any) => (
           <MainCard key={generation.id} generation={generation} />
         ))}
       </MyLibWrapper>

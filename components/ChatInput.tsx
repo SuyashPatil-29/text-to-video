@@ -2,7 +2,6 @@
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,7 +17,6 @@ import { z } from "zod";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
-import Link from "next/link";
 import { Checkbox } from "./ui/checkbox";
 import { Visibility } from "@prisma/client";
 
@@ -46,7 +44,7 @@ const ChatInput = () => {
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       console.log(
-        values.public === true ? Visibility.PUBLIC : Visibility.PRIVATE
+        values.public === true ? Visibility.PUBLIC : Visibility.PRIVATE,
       );
       if (!values.prompt.trim()) {
         toast({
@@ -139,7 +137,7 @@ const ChatInput = () => {
                         control={form.control}
                         name="public"
                         render={({ field }) => (
-                          <FormItem className="flex items-center gap-2">
+                          <FormItem className="flex items-center justify-center gap-2">
                             <FormControl>
                               <Checkbox
                                 checked={field.value}
@@ -147,7 +145,9 @@ const ChatInput = () => {
                                 className="h-5 w-5 border-background"
                               />
                             </FormControl>
-                              <FormLabel className=" text-background pb-1">Make this video public</FormLabel>
+                            <FormLabel className=" text-background pb-1">
+                              Make this video public
+                            </FormLabel>
                           </FormItem>
                         )}
                       />
@@ -163,7 +163,7 @@ const ChatInput = () => {
                                   "resize-none pr-12 text-xl rounded-xl text-justify text-white bg-[rgb(34,34,34)] flex-1",
                                   form.formState.errors["prompt"]
                                     ? "focus:ring-offset-red-500 focus:ring-offset border-red-500"
-                                    : "border-input"
+                                    : "border-input",
                                 )}
                                 placeholder="Describe your story"
                                 rows={1}
@@ -180,7 +180,7 @@ const ChatInput = () => {
 
                     <Button
                       className={cn(
-                        "absolute bottom-[4px] right-[8px] px-0 py-0"
+                        "absolute bottom-[4px] right-[8px] px-0 py-0",
                       )}
                       aria-label="send message"
                       type="submit"

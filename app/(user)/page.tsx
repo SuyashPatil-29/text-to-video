@@ -1,125 +1,33 @@
-// "use client";
+"use client";
+import MainCard from "@/components/MainCard";
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
+import MyLibWrapper from "@/components/MyLibWrapper";
+import { Generation } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import React from "react";
 
-// import axios from "axios";
-// import { useSession } from "next-auth/react";
-// import { useState } from "react";
-// import "../globals.css";
+type Props = {};
 
-// const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
-
-// export default function Home() {
-//   const [prediction, setPrediction] = useState(null);
-//   const [error, setError] = useState(null);
-//   const { data: session, status } = useSession();
-
-//   const handleSubmit = async (e: any) => {
-//     e.preventDefault();
-//     try {
-//       const response = await fetch("/api/predictions", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({
-//           prompt: e.target.prompt.value,
-//           userId: session?.user.id,
-//         }),
-//       });
-
-//       if (!response.ok) {
-//         const error = await response.json();
-//         setError(error.detail);
-//         return;
-//       }
-
-//       let prediction = await response.json();
-//       setPrediction(prediction);
-
-//       while (
-//         prediction.status !== "succeeded" &&
-//         prediction.status !== "failed"
-//       ) {
-//         await sleep(1000);
-//         const statusResponse = await fetch("/api/predictions/" + prediction.id);
-
-//         if (!statusResponse.ok) {
-//           const error = await statusResponse.json();
-//           setError(error.detail);
-//           return;
-//         }
-
-//         prediction = await statusResponse.json();
-//         setPrediction(prediction);
-//       }
-
-//       const data = {
-//         prompt: e.target.prompt.value,
-//         userId: session?.user.id,
-//         videoUrl: prediction.output,
-//         status: prediction.status,
-//         id: prediction.id,
-//         visibility: "PUBLIC",
-//       };
-
-//       const libraryResponse = await axios.post("/api/my-library", data);
-
-//       if (libraryResponse.status === 200) {
-//         console.log("Success");
-//       } else {
-//         console.log("Error");
-//       }
-//     } catch (error) {
-//       console.error("An error occurred:", error);
-//     }
-//   };
-
-//   console.log({ prediction });
-//   return (
-//     <div className="container text-white">
-//       <form className="form" onSubmit={handleSubmit}>
-//         <input
-//           type="text"
-//           name="prompt"
-//           placeholder="Enter a prompt to display an image"
-//           className=" text-black"
-//         />
-//         <button type="submit">Go!</button>
-//       </form>
-
-//       {error && <div>{error}</div>}
-
-//       {prediction && (
-//         <div>
-//           {/* @ts-ignore */}
-//           {prediction.output && (
-//             <div className="videoWrapper">
-//               {/* Use the video element instead of Image */}
-//               <video controls width="100%" height="auto">
-//                 <source
-//                   /* @ts-ignore */
-//                   src={prediction.output}
-//                   type="video/mp4"
-//                 />
-//                 Your browser does not support the video tag.
-//               </video>
-//             </div>
-//           )}
-//           {/* @ts-ignore */}
-//           <p>status: {prediction.status}</p>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-import React from 'react'
-
-type Props = {}
-
-const page = (props: Props) => {
+const MainPage = (props: Props) => {
+  const { data: myGenerations } = useQuery({
+    queryKey: ["my-library"],
+    queryFn: async () => {
+      const { data } = await axios.get("/api/home");
+      console.log("data", data);
+      return data as Generation[];
+    },
+  });
+  console.log(myGenerations);
   return (
-    <div>page</div>
-  )
-}
+    <MaxWidthWrapper className="mt-10">
+      <MyLibWrapper>
+        {myGenerations?.map((generation: any) => (
+          <MainCard key={generation.id} generation={generation} />
+        ))}
+      </MyLibWrapper>
+    </MaxWidthWrapper>
+  );
+};
 
-export default page
+export default MainPage;
